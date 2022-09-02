@@ -28,13 +28,9 @@ const fs = require('fs-extra');
 const path = require("path");
 const progress = require('cli-progress');
 const minimist = require('minimist');
+const childProcess = require('child_process');
 
 const packageJson = require('../package.json');
-const bar = new progress.SingleBar({}, {
-    format: '[{bar}]({value}/{total}) {percentage}% | {eta}s',
-    barCompleteChar: '=',
-    barIncompleteChar: ' '
-});
 
 program
     .version(packageJson.version, '-v, --version')
@@ -58,16 +54,7 @@ program
         if (minimist(process.argv.slice(3))._.length > 1) {
             console.log(chalk.yellow('\n Info: You provided more than one argument. The first one will be used as the app\'s name, the rest are ignored.'))
         }
-    
-        console.clear();
-        console.log(chalk.bold.yellow('< Facile.js CLI >'));
-        bar.start(2, 0);
-        bar.update(1);
-        bar.stop();
-        const cwd = process.cwd();
-        const inCurrent = projectName === '.';
-        const name = inCurrent ? path.relative('../', cwd) : projectName;
-        const targetDir = path.resolve(cwd, projectName || '.');
+        require('../lib/create')(projectName);
     });
 
 program
